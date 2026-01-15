@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: budgetez-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: budgetez
+      MONGO_INITDB_ROOT_PASSWORD: budgetez
+    volumes:
+      - mongodb_data:/data/db
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: budgetez-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: budgetez
+      POSTGRES_PASSWORD: budgetez
+      POSTGRES_DB: budgetez
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  mongodb_data:
+  postgres_data:
