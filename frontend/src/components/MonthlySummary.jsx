@@ -14,8 +14,30 @@ import {
 } from 'recharts'
 import './MonthlySummary.css'
 
-function MonthlySummary({ transactions }) {
+function MonthlySummary({ transactions, recurringExpenses = [] }) {
   const currentMonth = new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })
+
+  // Calculate monthly equivalent for recurring expenses
+  const getMonthlyAmount = (amount, frequency) => {
+    switch (frequency) {
+      case 'weekly':
+        return amount * (52 / 12) // approx 4.333 weeks per month
+      case 'monthly':
+        return amount
+      case 'yearly':
+        return amount / 12
+      default:
+        return amount
+    }
+  }
+
+  // Calculate recurring expenses for this month
+  const recurringMonthlyExpenses = recurringExpenses.map(expense => ({
+    ...expense,
+    monthlyAmount: getMonthlyAmount(expense.amount, expense.frequency)
+  }))
+
+  const recurringExpensesTotal = recurringMonthlyExpenses.reduce((sum, expense) => sum + expense.monthlyAmount, 0)
 
   // Calculate totals
   const income = transactions
@@ -24,7 +46,7 @@ function MonthlySummary({ transactions }) {
 
   const expenses = transactions
     .filter(t => t.type === 'expense')
-    .reduce((sum, t) => sum + t.amount, 0)
+    .reduce((sum, t) => sum + t.amount, 0) + recurringExpensesTotal
 
   const balance = income - expenses
 
@@ -35,6 +57,11 @@ function MonthlySummary({ transactions }) {
     .forEach(t => {
       categoryBreakdown[t.category] = (categoryBreakdown[t.category] || 0) + t.amount
     })
+
+  // Add recurring expenses to category breakdown
+  recurringMonthlyExpenses.forEach(expense => {
+    categoryBreakdown[expense.category] = (categoryBreakdown[expense.category] || 0) + expense.monthlyAmount
+  })
 
   const categoryData = Object.entries(categoryBreakdown).map(([name, value]) => ({
     name: name.charAt(0).toUpperCase() + name.slice(1),
@@ -69,6 +96,10 @@ function MonthlySummary({ transactions }) {
         <div className="card expense-card">
           <div className="card-label">Total Expenses</div>
           <div className="card-value">{formatCurrency(expenses)}</div>
+        </div>
+        <div className="card recurring-card">
+          <div className="card-label">Recurring Expenses</div>
+          <div className="card-value">{formatCurrency(recurringExpensesTotal)}</div>
         </div>
         <div className={`card balance-card ${balance >= 0 ? 'positive' : 'negative'}`}>
           <div className="card-label">Balance</div>

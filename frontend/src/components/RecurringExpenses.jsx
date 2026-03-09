@@ -19,7 +19,7 @@ function RecurringExpenses({ onUpdate }) {
 
   const fetchRecurring = async () => {
     try {
-      const response = await axios.get('/api/recurring')
+      const response = await axios.get('/api/recurring/')
       setRecurring(response.data)
     } catch (error) {
       console.error('Failed to fetch recurring expenses:', error)
@@ -41,7 +41,7 @@ function RecurringExpenses({ onUpdate }) {
     setLoading(true)
     setError('')
     try {
-      await axios.post('/api/recurring', {
+      await axios.post('/api/recurring/', {
         ...formData,
         amount: parseFloat(formData.amount),
       })
@@ -134,7 +134,7 @@ function RecurringExpenses({ onUpdate }) {
           <p className="no-items">No recurring expenses yet.</p>
         ) : (
           recurring.map(item => (
-            <div key={item._id} className="recurring-item">
+            <div key={item.id} className="recurring-item">
               <div>
                 <div className="item-description">{item.description}</div>
                 <div className="item-meta">
@@ -143,7 +143,7 @@ function RecurringExpenses({ onUpdate }) {
               </div>
               <button
                 className="delete-btn"
-                onClick={() => handleDelete(item._id)}
+                onClick={() => handleDelete(item.id)}
               >
                 ✕
               </button>

@@ -12,3 +12,7 @@ DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://budgetez:budgetez@localho
 
 # FastAPI
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+
+# Auth
+SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-production")
+ALGORITHM = "HS256"

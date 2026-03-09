@@ -3,11 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from db.postgresql import Base, engine
 from routes.transactions import router as transactions_router
 from routes.recurring import router as recurring_router
+from routes.auth import router as auth_router
 
 # Create tables in PostgreSQL
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="BudgetEZ API", version="0.1.0")
+app = FastAPI(title="BudgetEZ API", version="0.1.0", redirect_slashes=False)
 
 # CORS middleware
 app.add_middleware(
@@ -18,9 +19,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(transactions_router)
-app.include_router(recurring_router)
+# Include routers with /api prefix
+app.include_router(auth_router, prefix="/api")
+app.include_router(transactions_router, prefix="/api")
+app.include_router(recurring_router, prefix="/api")
 
 @app.get("/health")
 async def health_check():

@@ -36,7 +36,7 @@ function TransactionForm({ onTransactionAdded }) {
     setLoading(true)
     setError('')
     try {
-      await axios.post('/api/transactions', {
+      await axios.post('/api/transactions/', {
         ...formData,
         amount: parseFloat(formData.amount),
         date: new Date().toISOString(),
