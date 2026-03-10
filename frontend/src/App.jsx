@@ -4,6 +4,7 @@ import TransactionForm from './components/TransactionForm'
 import TransactionList from './components/TransactionList'
 import RecurringExpenses from './components/RecurringExpenses'
 import MonthlySummary from './components/MonthlySummary'
+import YearlySummary from './components/YearlySummary'
 import LoginPage from './components/LoginPage'
 import './App.css'
 
@@ -107,6 +108,12 @@ function App() {
         >
           Monthly Summary
         </button>
+        <button
+          className={`tab ${activeTab === 'yearly' ? 'active' : ''}`}
+          onClick={() => setActiveTab('yearly')}
+        >
+          Yearly Report
+        </button>
       </nav>
 
       <main className="content">
@@ -121,6 +128,9 @@ function App() {
         )}
         {activeTab === 'summary' && (
           <MonthlySummary transactions={transactions} recurringExpenses={recurringExpenses} />
+        )}
+        {activeTab === 'yearly' && (
+          <YearlySummary transactions={transactions} recurringExpenses={recurringExpenses} />
         )}
       </main>
     </div>
